@@ -1,0 +1,79 @@
+- name: Scan sources for directories
+  find:
+    paths: "{{ item.1 }}"
+    file_type: directory
+    hidden: true
+    recurse: true
+  register: configs__dirs
+  delegate_to: localhost
+  with_subelements:
+    - "{{ configs_packs }}"
+    - sources
+
+- name: Scan sources for files
+  find:
+    paths: "{{ item.1 }}"
+    file_type: file
+    hidden: true
+    recurse: true
+  register: configs__files
+  delegate_to: localhost
+  with_subelements:
+    - "{{ configs_packs }}"
+    - sources
+
+- name: Create destination directories
+  file:
+    path: "{{ item.destination }}"
+    state: directory
+    owner: "{{ calculated.owner | default(omit) }}"
+    group: "{{ calculated.group | default(omit) }}"
+    mode: "{{ calculated.mode | default(omit) }}"
+  loop: "{{ configs_packs }}"
+  vars:
+    relative_path: "/"
+    permissions: "{{ item.permissions | default({}) }}"
+    defaults: "{{ (permissions.defaults | default({})).directory | default({}) }}"
+    individual: "{{ (permissions.individual | default({}))[relative_path] | default({}) }}"
+    calculated: "{{ defaults | combine(individual) }}"
+
+- name: Create intermediate directories
+  file:
+    path: "{{ item.0.item.0.destination }}{{ relative_path }}"
+    state: directory
+    owner: "{{ calculated.owner | default(omit) }}"
+    group: "{{ calculated.group | default(omit) }}"
+    mode: "{{ calculated.mode | default(omit) }}"
+  with_subelements:
+    - "{{ configs__dirs.results }}"
+    - files
+  loop_control:
+    label: "{{ {'source': source, 'destination': item.0.item.0.destination, 'relative_path': relative_path} }}"
+  vars:
+    source: "{{ item.0.invocation.module_args.paths.0 }}"
+    relative_path: "{{ '/' ~ item.1.path | relpath(source) }}"
+    permissions: "{{ item.permissions | default({}) }}"
+    defaults: "{{ (permissions.defaults | default({})).directory | default({}) }}"
+    individual: "{{ (permissions.individual | default({}))[relative_path] | default({}) }}"
+    calculated: "{{ defaults | combine(individual) }}"
+
+- name: Template files
+  template:
+    src: "{{ source }}{{ relative_path }}"
+    dest: "{{ item.0.item.0.destination }}{{ relative_path }}"
+    owner: "{{ calculated.owner | default(omit) }}"
+    group: "{{ calculated.group | default(omit) }}"
+    mode: "{{ calculated.mode | default(omit) }}"
+  with_subelements:
+    - "{{ configs__files.results }}"
+    - files
+  loop_control:
+    label: "{{ {'source': source, 'destination': item.0.item.0.destination, 'relative_path': relative_path} }}"
+  vars:
+    source: "{{ item.0.invocation.module_args.paths.0 }}"
+    relative_path: "{{ '/' ~ item.1.path | relpath(source) }}"
+    permissions: "{{ item.permissions | default({}) }}"
+    defaults: "{{ (permissions.defaults | default({})).file | default({}) }}"
+    individual: "{{ (permissions.individual | default({}))[relative_path] | default({}) }}"
+    calculated: "{{ defaults | combine(individual) }}"
+    variables: "{{ item.0.item.variables | default({}) }}"

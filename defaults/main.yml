@@ -1,0 +1,22 @@
+configs_packs: []
+#   - sources:
+#       - "configs/all"
+#       - "configs/{{ env }}"
+#     destination: /configs
+#     variables:
+#       abc: xyz
+#     permissions:
+#       default:
+#         directory:
+#           owner: root
+#           group: root
+#           mode: "0755"
+#         file:
+#           owner: root
+#           group: root
+#           mode: "0644"
+#       individual:
+#         secret.conf:
+#           owner: root
+#           group: root
+#           mode: "0640"
