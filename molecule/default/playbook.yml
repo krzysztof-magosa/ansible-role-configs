@@ -5,6 +5,12 @@
         - sources:
             - "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/default/assets/configs/test1"
           destination: /configs/test1
+          variables:
+            a: 10
+            b: 20
         - sources:
             - "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/default/assets/configs/test2"
           destination: /configs/test2
+          variables:
+            x: 100
+            y: 200
