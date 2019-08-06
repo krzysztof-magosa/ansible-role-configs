@@ -6,6 +6,7 @@
     recurse: true
   register: configs__dirs
   delegate_to: localhost
+  become: false
   with_subelements:
     - "{{ configs_packs }}"
     - sources
@@ -18,6 +19,7 @@
     recurse: true
   register: configs__files
   delegate_to: localhost
+  become: false
   with_subelements:
     - "{{ configs_packs }}"
     - sources
