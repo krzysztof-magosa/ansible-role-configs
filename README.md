@@ -6,12 +6,12 @@
 Generic configs templater
 
 ## Requirements
-* Ansible 2.5
+* Ansible 2.8+ (tested on 2.8, 2.9 but likely works on older versions as well)
 
 ## Supported systems
-* CentOS (tested on 7)
-* Debian (tested on Stretch)
-* Ubuntu (tested on Bionic)
+* CentOS (tested on 7, 8)
+* Debian (tested on 10 buster, 11 bullseye)
+* Ubuntu (tested on 18.04 bionic)
 
 ## Variables
 See [defaults](defaults/main.yml).
