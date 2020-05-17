@@ -7,13 +7,15 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - stretch
+        - buster
+        - bullseye
     - name: Ubuntu
       versions:
         - bionic
     - name: EL
       versions:
         - 7
+        - 8
   # galaxy_tags:
   #   - tag_name
 
