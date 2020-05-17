@@ -5,6 +5,8 @@ configs_packs: []
 #     destination: /configs
 #     variables:
 #       abc: xyz
+#     notify:
+#       - my_handler
 #     permissions:
 #       default:
 #         directory:

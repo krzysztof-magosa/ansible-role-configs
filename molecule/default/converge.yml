@@ -1,4 +1,8 @@
 - hosts: all
+  handlers:
+    - name: Test
+      listen: my_handler
+      command: echo "hello"
   roles:
     - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       configs_packs:
@@ -14,3 +18,5 @@
           variables:
             x: 100
             y: 200
+          notify:
+            - my_handler
